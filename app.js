@@ -82,6 +82,7 @@ th{background:#edf2ee;font-size:.78rem}td{border-top:1px solid #16272415}
 td:nth-child(-n+3){width:1%;white-space:nowrap;text-align:right;font: .83rem/1.5 ui-monospace,monospace}
 code{display:block;white-space:pre-wrap;overflow-wrap:anywhere;min-height:1.5em;font:.87rem/1.5 ui-monospace,monospace;tab-size:4}
 </style></head><body><main><h1>Text Diff Report</h1>
+<p>Diff reported generated at <a href="https://outlierfred2.github.io/diff-report/">https://outlierfred2.github.io/diff-report</a>.</p>
 <div class="summary"><span class="added">+ ${additions} added</span><span class="removed">− ${removals} removed</span></div>
 ${coarse ? "<p>The changed section is large, so it is shown as one replacement.</p>" : ""}
 ${additions || removals ? "" : "<p>The two texts are identical.</p>"}
