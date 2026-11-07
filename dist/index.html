@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diff Report — Text Comparison</title>
+<meta name="description" content="Compare two texts and open or download a standalone HTML diff report.">
+<link rel="stylesheet" href="style.css">
+<script src="app.js" defer></script>
+</head>
+<body>
+<header><div class="bar"><span class="logo" aria-hidden="true">±</span><strong>Diff Report</strong><span class="private">● &nbsp; Local comparison</span></div></header>
+<main>
+<div class="intro">
+<p class="eyebrow">TEXT COMPARISON</p>
+<h1>Compare text.</h1>
+<p>Paste two versions of your text to see exactly what changed.</p>
+</div>
+<form id="comparison">
+<div class="editors">
+<div class="editor"><label for="original"><span class="tag">01</span> Original text</label><textarea id="original" placeholder="Paste your original text here…" spellcheck="false"></textarea><div class="count" id="original-count">0 lines</div></div>
+<div class="editor"><label for="updated"><span class="tag">02</span> Updated text</label><textarea id="updated" placeholder="Paste your updated text here…" spellcheck="false"></textarea><div class="count" id="updated-count">0 lines</div></div>
+</div>
+<div class="actions">
+<p class="hint">Your text stays in this browser.</p>
+<button type="submit" name="view" class="primary" disabled>View diffs <span aria-hidden="true">↗</span></button>
+<button type="submit" name="download" disabled>Download HTML <span aria-hidden="true">↓</span></button>
+</div>
+<p role="status" id="status"></p>
+</form>
+</main>
+</body>
+</html>
