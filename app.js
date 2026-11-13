@@ -53,19 +53,57 @@ function compare(before, after) {
 const entities = { "&": "&amp;", "<": "&lt;", ">": "&gt;", "\r": "&#13;", "\0": "␀" };
 const escapeHTML = text => text.replace(/[&<>\r\0]/g, character => entities[character]);
 
+// Pair lines by position within each consecutive block of changed lines.
+function highlightWords(changes) {
+  const highlighted = changes.map(([, value]) => escapeHTML(value));
+  let start = 0;
+  const tokenize = value => value.match(/[\p{L}\p{N}_]+|\s+|[^\p{L}\p{N}_\s]/gu) || [];
+  while (start < changes.length) {
+    if (changes[start][0] === "same") {
+      start++;
+      continue;
+    }
+    const removed = [];
+    const added = [];
+    let end = start;
+    while (end < changes.length && changes[end][0] !== "same") {
+      (changes[end][0] === "removed" ? removed : added).push(end++);
+    }
+    for (let index = 0; index < Math.max(removed.length, added.length); index++) {
+      const oldIndex = removed[index];
+      const newIndex = added[index];
+      const oldTokens = oldIndex === undefined ? [] : tokenize(changes[oldIndex][1]);
+      const newTokens = newIndex === undefined ? [] : tokenize(changes[newIndex][1]);
+      const oldHTML = [];
+      const newHTML = [];
+      for (const [kind, token] of compare(oldTokens, newTokens).changes) {
+        const escaped = escapeHTML(token);
+        const html = kind === "same" ? escaped : `<mark>${escaped}</mark>`;
+        if (kind !== "added") oldHTML.push(html);
+        if (kind !== "removed") newHTML.push(html);
+      }
+      if (oldIndex !== undefined) highlighted[oldIndex] = oldHTML.join("");
+      if (newIndex !== undefined) highlighted[newIndex] = newHTML.join("");
+    }
+    start = end;
+  }
+  return highlighted;
+}
+
 function report(before, after) {
   const { changes, coarse } = compare(lines(before), lines(after));
+  const highlighted = highlightWords(changes);
   let originalLine = 0;
   let updatedLine = 0;
   let additions = 0;
   let removals = 0;
-  const rows = changes.map(([kind, value]) => {
+  const rows = changes.map(([kind], index) => {
     const oldNumber = kind === "added" ? "" : ++originalLine;
     const newNumber = kind === "removed" ? "" : ++updatedLine;
     if (kind === "added") additions++;
     if (kind === "removed") removals++;
     const marker = { same: "", added: "+", removed: "−" }[kind];
-    return `<tr class="${kind}"><td>${oldNumber}</td><td>${newNumber}</td><td aria-label="${kind}">${marker}</td><td><code>${escapeHTML(value)}</code></td></tr>`;
+    return `<tr class="${kind}"><td>${oldNumber}</td><td>${newNumber}</td><td aria-label="${kind}">${marker}</td><td><code>${highlighted[index]}</code></td></tr>`;
   }).join("");
   return `<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
@@ -76,6 +114,7 @@ function report(before, after) {
 main{max-width:1150px;margin:auto;padding:40px 20px}h1{margin:0;letter-spacing:-.04em}
 .summary{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0 25px}.summary span{padding:6px 10px;border-radius:6px;font-size:.9rem;font-weight:650}
 .added{background:#e5f5eb;color:#155738}.removed{background:#fce9e9;color:#842b31}
+.added mark{background:#a5dfb8;color:inherit}.removed mark{background:#f3a7ad;color:inherit}mark{border-radius:2px}
 .table-wrap{border:1px solid #d4dfda;border-radius:10px;overflow:auto;background:white}
 table{width:100%;border-collapse:collapse;text-align:left}td,th{padding:5px 10px;vertical-align:top}
 th{background:#edf2ee;font-size:.78rem}td{border-top:1px solid #16272415}
