@@ -82,8 +82,8 @@ function highlightWords(changes) {
         if (kind !== "added") oldHTML.push(html);
         if (kind !== "removed") newHTML.push(html);
       }
-      if (oldIndex !== undefined) highlighted[oldIndex] = oldHTML.join("");
-      if (newIndex !== undefined) highlighted[newIndex] = newHTML.join("");
+      if (oldIndex !== undefined) highlighted[oldIndex] = oldHTML.join("").replace(/<\/mark>(\s*)<mark>/g, "$1");
+      if (newIndex !== undefined) highlighted[newIndex] = newHTML.join("").replace(/<\/mark>(\s*)<mark>/g, "$1");
     }
     start = end;
   }
@@ -114,7 +114,7 @@ function report(before, after) {
 main{max-width:1150px;margin:auto;padding:40px 20px}h1{margin:0;letter-spacing:-.04em}
 .summary{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0 25px}.summary span{padding:6px 10px;border-radius:6px;font-size:.9rem;font-weight:650}
 .added{background:#e5f5eb;color:#155738}.removed{background:#fce9e9;color:#842b31}
-.added mark{background:#a5dfb8;color:inherit}.removed mark{background:#f3a7ad;color:inherit}mark{border-radius:2px}
+.added mark{background:#c5e9d0;color:inherit}.removed mark{background:#f7c9cd;color:inherit}mark{border-radius:2px}
 .table-wrap{border:1px solid #d4dfda;border-radius:10px;overflow:auto;background:white}
 table{width:100%;border-collapse:collapse;text-align:left}td,th{padding:5px 10px;vertical-align:top}
 th{background:#edf2ee;font-size:.78rem}td{border-top:1px solid #16272415}
